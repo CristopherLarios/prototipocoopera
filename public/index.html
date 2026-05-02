@@ -5,337 +5,21 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>COOPERA — Plataforma Fintech</title>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.5.0/dist/chart.umd.js"></script>
-<style>
-:root {
-  --c-brand:#00897B; --c-brand2:#00695C; --c-brand-lt:#E0F2F1; --c-accent:#26A69A;
-  --c-bg:#F5F7FA; --c-card:#FFFFFF; --c-border:#E2E8F0;
-  --c-text:#1A202C; --c-muted:#718096;
-  --c-red:#E53E3E; --c-green:#38A169; --c-yellow:#D69E2E; --c-blue:#3182CE; --c-purple:#805AD5;
-  --c-sidebar:#0F3D35; --c-sidebar-t:#B2DFDB;
-  --radius:12px; --shadow:0 2px 16px rgba(0,0,0,0.08);
-}
-*{box-sizing:border-box;margin:0;padding:0;font-family:'Segoe UI',system-ui,sans-serif;}
-body{background:var(--c-bg);color:var(--c-text);min-height:100vh;overflow-x:hidden;}
-.view{display:none;min-height:100vh;}
-.view.active{display:flex;}
-
-/* LOGIN */
-#v-login{flex-direction:column;align-items:center;justify-content:center;
-  background:linear-gradient(135deg,#0F3D35 0%,#00695C 55%,#26A69A 100%);padding:20px;}
-.login-card{background:#fff;border-radius:20px;padding:48px 40px;width:400px;max-width:100%;
-  box-shadow:0 24px 64px rgba(0,0,0,0.28);}
-.login-logo{display:flex;align-items:center;gap:12px;margin-bottom:36px;}
-.login-logo .brand{font-size:30px;font-weight:800;color:var(--c-brand2);}
-.login-logo .tagline{font-size:11px;color:var(--c-muted);letter-spacing:.5px;text-transform:uppercase;margin-top:2px;}
-.form-group{margin-bottom:18px;}
-.form-group label{display:block;font-size:12px;font-weight:700;color:var(--c-muted);
-  margin-bottom:6px;text-transform:uppercase;letter-spacing:.5px;}
-.form-group input{width:100%;padding:13px 15px;border:1.5px solid var(--c-border);
-  border-radius:9px;font-size:15px;transition:border .2s,box-shadow .2s;outline:none;}
-.form-group input:focus{border-color:var(--c-brand);box-shadow:0 0 0 3px rgba(0,137,123,.12);}
-.login-error{display:none;background:#FEE2E2;color:#991B1B;border-radius:8px;
-  padding:10px 14px;font-size:13px;font-weight:600;margin-bottom:14px;text-align:center;}
-.btn-primary{width:100%;padding:14px;background:var(--c-brand);color:#fff;border:none;
-  border-radius:9px;font-size:16px;font-weight:700;cursor:pointer;transition:background .2s,transform .1s;letter-spacing:.3px;}
-.btn-primary:hover{background:var(--c-brand2);}
-.btn-primary:active{transform:scale(.98);}
-.login-hint{margin-top:24px;padding:16px;background:#F0FDF4;border-radius:10px;font-size:12px;color:#374151;line-height:1.8;}
-.login-hint strong{color:var(--c-brand2);}
-.login-toggle{margin-top:18px;text-align:center;font-size:13px;color:var(--c-muted);}
-.login-toggle a{color:var(--c-brand);cursor:pointer;font-weight:700;text-decoration:none;}
-.login-toggle a:hover{text-decoration:underline;}
-.show-pass-btn{position:absolute;right:14px;top:50%;transform:translateY(-50%);
-  background:none;border:none;cursor:pointer;color:var(--c-muted);font-size:18px;}
-.pass-wrapper{position:relative;}
-
-/* ONBOARDING */
-#v-onboarding{flex-direction:column;align-items:center;justify-content:center;
-  background:linear-gradient(135deg,#0F3D35 0%,#1B5E20 100%);padding:24px;}
-.onb-card{background:#fff;border-radius:20px;padding:40px;width:520px;max-width:100%;
-  box-shadow:0 20px 60px rgba(0,0,0,.25);}
-.onb-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:28px;}
-.onb-title{font-size:20px;font-weight:700;}
-.step-pills{display:flex;gap:6px;}
-.step-pill{width:28px;height:6px;border-radius:3px;background:var(--c-border);transition:background .3s;}
-.step-pill.done{background:var(--c-brand);}
-.step-pill.active{background:var(--c-accent);}
-.onb-step{display:none;}
-.onb-step.active{display:block;}
-.kyc-icon{width:68px;height:68px;border-radius:50%;background:var(--c-brand-lt);
-  display:flex;align-items:center;justify-content:center;margin:0 auto 16px;font-size:34px;}
-.kyc-zone{border:2px dashed var(--c-border);border-radius:12px;padding:32px;text-align:center;
-  cursor:pointer;transition:all .2s;margin:16px 0;}
-.kyc-zone:hover{border-color:var(--c-brand);background:var(--c-brand-lt);}
-.kyc-badge{display:inline-flex;align-items:center;gap:5px;padding:5px 12px;
-  border-radius:20px;font-size:11px;font-weight:700;transition:all .3s;}
-.kyc-badge.pending{background:#FFF3CD;color:#856404;}
-.kyc-badge.ok{background:#D1FAE5;color:#065F46;}
-.kyc-badge.fail{background:#FEE2E2;color:#991B1B;}
-.check-list{list-style:none;margin:16px 0;}
-.check-list li{display:flex;align-items:center;gap:10px;padding:10px 0;
-  border-bottom:1px solid var(--c-border);}
-.check-list li:last-child{border:none;}
-.check-icon{width:24px;height:24px;border-radius:50%;display:flex;align-items:center;
-  justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;transition:all .3s;}
-.check-icon.ok{background:#D1FAE5;color:#065F46;}
-.check-icon.spin{background:var(--c-brand-lt);color:var(--c-brand);animation:spin 1s linear infinite;}
-.check-icon.wait{background:#F3F4F6;color:#9CA3AF;}
-@keyframes spin{to{transform:rotate(360deg)}}
-.nav-row{display:flex;gap:10px;margin-top:24px;}
-.btn-outline{flex:1;padding:12px;border:1.5px solid var(--c-border);background:#fff;
-  border-radius:9px;font-size:14px;font-weight:600;cursor:pointer;transition:all .2s;}
-.btn-outline:hover{border-color:var(--c-brand);color:var(--c-brand);}
-.btn-primary-sm{flex:1;padding:12px;background:var(--c-brand);color:#fff;border:none;
-  border-radius:9px;font-size:14px;font-weight:700;cursor:pointer;transition:background .2s;}
-.btn-primary-sm:hover{background:var(--c-brand2);}
-.form-row{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
-.input-group{margin-bottom:14px;}
-.input-group label{display:block;font-size:12px;font-weight:700;color:var(--c-muted);
-  text-transform:uppercase;letter-spacing:.4px;margin-bottom:5px;}
-.input-group input,.input-group select{width:100%;padding:11px 13px;
-  border:1.5px solid var(--c-border);border-radius:8px;font-size:14px;outline:none;transition:border .2s;}
-.input-group input:focus,.input-group select:focus{border-color:var(--c-brand);}
-
-/* APP SHELL */
-#v-app{flex-direction:row;}
-.sidebar{width:244px;min-height:100vh;background:var(--c-sidebar);display:flex;flex-direction:column;flex-shrink:0;}
-.sidebar-logo{padding:22px 20px;display:flex;align-items:center;gap:10px;
-  border-bottom:1px solid rgba(255,255,255,.08);}
-.sidebar-logo .brand{font-size:22px;font-weight:800;color:#fff;}
-.sidebar-logo .sub{font-size:10px;color:var(--c-sidebar-t);letter-spacing:.5px;}
-.sidebar-nav{padding:14px 10px;flex:1;}
-.nav-section{font-size:10px;font-weight:700;color:rgba(255,255,255,.3);
-  letter-spacing:1px;text-transform:uppercase;padding:10px 10px 4px;}
-.nav-item{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:8px;
-  cursor:pointer;color:var(--c-sidebar-t);font-size:14px;font-weight:500;
-  transition:all .2s;margin-bottom:2px;user-select:none;}
-.nav-item:hover,.nav-item.active{background:rgba(255,255,255,.1);color:#fff;}
-.nav-item .icon{font-size:17px;width:22px;text-align:center;}
-.sidebar-footer{padding:16px;border-top:1px solid rgba(255,255,255,.08);}
-.user-chip{display:flex;align-items:center;gap:10px;cursor:pointer;padding:8px;
-  border-radius:8px;transition:background .2s;}
-.user-chip:hover{background:rgba(255,255,255,.08);}
-.avatar{width:36px;height:36px;border-radius:50%;background:var(--c-accent);
-  display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:#fff;flex-shrink:0;}
-.user-name{font-size:13px;font-weight:600;color:#fff;}
-.user-role-txt{font-size:11px;color:var(--c-sidebar-t);}
-
-/* MAIN */
-.main{flex:1;display:flex;flex-direction:column;min-height:100vh;overflow:hidden;}
-.topbar{padding:16px 24px;background:#fff;border-bottom:1px solid var(--c-border);
-  display:flex;align-items:center;justify-content:space-between;box-shadow:0 1px 4px rgba(0,0,0,.04);}
-.topbar-title{font-size:20px;font-weight:700;}
-.topbar-actions{display:flex;gap:10px;align-items:center;}
-.notif-btn{width:38px;height:38px;border-radius:50%;border:1.5px solid var(--c-border);
-  background:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;
-  font-size:17px;position:relative;transition:all .2s;}
-.notif-btn:hover{border-color:var(--c-brand);background:var(--c-brand-lt);}
-.notif-dot{width:8px;height:8px;border-radius:50%;background:var(--c-red);
-  position:absolute;top:4px;right:4px;border:2px solid #fff;}
-.content{flex:1;padding:24px;overflow-y:auto;}
-.screen{display:none;}
-.screen.active{display:block;}
-
-/* CARDS */
-.card{background:var(--c-card);border-radius:var(--radius);padding:20px;
-  box-shadow:var(--shadow);border:1px solid var(--c-border);}
-.card-title{font-size:13px;font-weight:700;color:var(--c-muted);
-  text-transform:uppercase;letter-spacing:.5px;margin-bottom:16px;}
-
-/* DASHBOARD SOCIO */
-.balance-card{background:linear-gradient(135deg,var(--c-brand2) 0%,var(--c-accent) 100%);
-  border-radius:var(--radius);padding:26px;color:#fff;position:relative;overflow:hidden;margin-bottom:20px;}
-.balance-card::before{content:'';position:absolute;right:-40px;top:-40px;width:160px;height:160px;
-  border-radius:50%;background:rgba(255,255,255,.07);}
-.balance-card::after{content:'';position:absolute;right:60px;bottom:-50px;width:120px;height:120px;
-  border-radius:50%;background:rgba(255,255,255,.05);}
-.balance-label{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;opacity:.8;}
-.balance-amount{font-size:44px;font-weight:800;margin:8px 0;letter-spacing:-1px;}
-.balance-sub{font-size:13px;opacity:.75;}
-.balance-actions{display:flex;gap:10px;margin-top:22px;position:relative;z-index:1;}
-.balance-btn{flex:1;padding:11px;background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.3);
-  border-radius:9px;color:#fff;font-size:13px;font-weight:600;cursor:pointer;
-  transition:all .2s;text-align:center;}
-.balance-btn:hover{background:rgba(255,255,255,.28);}
-.stats-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:20px;}
-.stat-card{background:#fff;border-radius:var(--radius);padding:18px;box-shadow:var(--shadow);
-  border:1px solid var(--c-border);}
-.stat-value{font-size:26px;font-weight:800;}
-.stat-label{font-size:12px;color:var(--c-muted);margin-top:4px;}
-.stat-badge{display:inline-block;font-size:11px;font-weight:700;padding:3px 9px;border-radius:20px;margin-top:6px;}
-.stat-badge.up{background:#D1FAE5;color:#065F46;}
-.stat-badge.dn{background:#FEE2E2;color:#991B1B;}
-.tx-list{}
-.tx-item{display:flex;align-items:center;gap:14px;padding:12px 0;border-bottom:1px solid var(--c-border);}
-.tx-item:last-child{border:none;padding-bottom:0;}
-.tx-icon{width:44px;height:44px;border-radius:12px;display:flex;align-items:center;
-  justify-content:center;font-size:20px;flex-shrink:0;}
-.tx-icon.in{background:#D1FAE5;}
-.tx-icon.out{background:#FEE2E2;}
-.tx-icon.pay{background:#EDE9FE;}
-.tx-info{flex:1;}
-.tx-name{font-size:14px;font-weight:600;}
-.tx-date{font-size:12px;color:var(--c-muted);margin-top:2px;}
-.tx-amount{font-size:15px;font-weight:700;white-space:nowrap;}
-.tx-amount.in{color:var(--c-green);}
-.tx-amount.out{color:var(--c-red);}
-.quick-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:8px 0;}
-.quick-btn{background:#fff;border:1.5px solid var(--c-border);border-radius:var(--radius);
-  padding:18px 10px;text-align:center;cursor:pointer;transition:all .2s;}
-.quick-btn:hover{border-color:var(--c-brand);background:var(--c-brand-lt);transform:translateY(-2px);}
-.quick-btn .qicon{font-size:26px;margin-bottom:8px;}
-.quick-btn .qlabel{font-size:11px;font-weight:600;color:var(--c-muted);}
-
-/* TRANSFER */
-.transfer-tabs{display:flex;gap:0;margin-bottom:24px;border-radius:10px;
-  border:1.5px solid var(--c-border);overflow:hidden;}
-.t-tab{flex:1;padding:11px;text-align:center;cursor:pointer;font-size:13px;font-weight:600;
-  color:var(--c-muted);border-right:1.5px solid var(--c-border);transition:all .2s;}
-.t-tab:last-child{border:none;}
-.t-tab.active{background:var(--c-brand);color:#fff;}
-.amount-box{border:2px solid var(--c-border);border-radius:12px;padding:20px;
-  margin:16px 0;transition:border .2s;display:flex;align-items:center;}
-.amount-box:focus-within{border-color:var(--c-brand);}
-.amount-currency{font-size:30px;font-weight:800;color:var(--c-muted);margin-right:8px;}
-.amount-input{font-size:30px;font-weight:800;border:none;outline:none;width:100%;
-  color:var(--c-text);background:transparent;}
-.otp-grid{display:flex;gap:10px;justify-content:center;margin:20px 0;}
-.otp-box{width:52px;height:60px;border:2px solid var(--c-border);border-radius:10px;
-  font-size:24px;font-weight:700;text-align:center;outline:none;transition:border .2s;}
-.otp-box:focus{border-color:var(--c-brand);box-shadow:0 0 0 3px rgba(0,137,123,.1);}
-.confirm-card{background:var(--c-brand-lt);border-radius:var(--radius);padding:20px;margin:16px 0;border:1px solid rgba(0,137,123,.2);}
-.confirm-row{display:flex;justify-content:space-between;align-items:center;
-  padding:7px 0;font-size:14px;border-bottom:1px solid rgba(0,137,123,.1);}
-.confirm-row:last-child{border:none;}
-.confirm-row .label{color:var(--c-muted);}
-.confirm-row .val{font-weight:600;}
-.success-anim{text-align:center;padding:28px 0;}
-.success-circle{width:84px;height:84px;border-radius:50%;background:#D1FAE5;
-  display:flex;align-items:center;justify-content:center;margin:0 auto 18px;font-size:42px;
-  animation:popIn .4s cubic-bezier(.175,.885,.32,1.275);}
-@keyframes popIn{from{transform:scale(0);opacity:0;}to{transform:scale(1);opacity:1;}}
-
-/* PAYMENTS */
-.service-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:16px 0;}
-.service-item{background:#fff;border:1.5px solid var(--c-border);border-radius:var(--radius);
-  padding:20px 12px;text-align:center;cursor:pointer;transition:all .2s;}
-.service-item:hover,.service-item.selected{border-color:var(--c-brand);
-  background:var(--c-brand-lt);transform:translateY(-2px);}
-.service-icon{font-size:32px;margin-bottom:8px;}
-.service-name{font-size:13px;font-weight:600;color:var(--c-muted);}
-
-/* TABLE */
-.table-wrap{overflow-x:auto;}
-table{width:100%;border-collapse:collapse;}
-table th{padding:11px 14px;background:#F8FAFC;font-size:11px;font-weight:700;
-  color:var(--c-muted);text-transform:uppercase;letter-spacing:.4px;text-align:left;
-  border-bottom:2px solid var(--c-border);}
-table td{padding:13px 14px;font-size:14px;border-bottom:1px solid var(--c-border);vertical-align:middle;}
-table tr:hover td{background:#FAFAFA;}
-.badge{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;
-  border-radius:20px;font-size:11px;font-weight:700;}
-.badge.green{background:#D1FAE5;color:#065F46;}
-.badge.red{background:#FEE2E2;color:#991B1B;}
-.badge.yellow{background:#FEF9C3;color:#854D0E;}
-.badge.blue{background:#DBEAFE;color:#1E40AF;}
-.badge.purple{background:#EDE9FE;color:#5B21B6;}
-.badge.gray{background:#F3F4F6;color:#374151;}
-
-/* ADMIN */
-.admin-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:20px;}
-.aStat{background:#fff;border-radius:var(--radius);padding:20px;border:1px solid var(--c-border);box-shadow:var(--shadow);}
-.aStat .val{font-size:30px;font-weight:800;}
-.aStat .lbl{font-size:12px;color:var(--c-muted);margin-top:4px;}
-.aStat .trend{font-size:11px;font-weight:700;margin-top:8px;padding:3px 9px;
-  border-radius:10px;display:inline-block;}
-.chart-grid{display:grid;grid-template-columns:2fr 1fr;gap:16px;margin-bottom:20px;}
-.kyc-item{display:flex;align-items:center;gap:14px;padding:14px 0;border-bottom:1px solid var(--c-border);}
-.kyc-item:last-child{border:none;}
-.kyc-avatar{width:44px;height:44px;border-radius:50%;background:var(--c-brand-lt);
-  display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:700;
-  color:var(--c-brand2);flex-shrink:0;}
-.kyc-info{flex:1;}
-.kyc-name{font-size:14px;font-weight:600;}
-.kyc-detail{font-size:12px;color:var(--c-muted);}
-.kyc-actions{display:flex;gap:8px;}
-.btn-sm{padding:7px 14px;border-radius:7px;font-size:12px;font-weight:700;
-  cursor:pointer;border:none;transition:all .2s;}
-.btn-sm.approve{background:#D1FAE5;color:#065F46;}
-.btn-sm.approve:hover{background:#A7F3D0;}
-.btn-sm.reject{background:#FEE2E2;color:#991B1B;}
-.btn-sm.reject:hover{background:#FECACA;}
-.btn-sm.view{background:#DBEAFE;color:#1E40AF;}
-.btn-sm.view:hover{background:#BFDBFE;}
-.btn-sm.action{background:var(--c-brand-lt);color:var(--c-brand2);}
-.btn-sm.action:hover{background:#B2DFDB;}
-.recon-bar{height:8px;border-radius:4px;background:var(--c-border);margin:6px 0;overflow:hidden;}
-.recon-fill{height:100%;border-radius:4px;transition:width .8s ease;}
-
-/* FILTERS */
-.filter-row{display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap;}
-.filter-chip{padding:7px 16px;border-radius:20px;border:1.5px solid var(--c-border);
-  background:#fff;cursor:pointer;font-size:13px;font-weight:600;color:var(--c-muted);transition:all .2s;}
-.filter-chip.active{background:var(--c-brand);color:#fff;border-color:var(--c-brand);}
-
-/* UTILS */
-.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
-.grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;}
-.section-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;}
-.section-title{font-size:18px;font-weight:700;}
-.link-btn{color:var(--c-brand);font-size:13px;font-weight:600;cursor:pointer;background:none;border:none;padding:0;}
-.link-btn:hover{text-decoration:underline;}
-.text-muted{color:var(--c-muted);}
-.text-sm{font-size:13px;}
-.text-center{text-align:center;}
-.divider{height:1px;background:var(--c-border);margin:16px 0;}
-.search-bar{display:flex;gap:10px;margin-bottom:16px;}
-.search-bar input{flex:1;padding:10px 14px;border:1.5px solid var(--c-border);border-radius:8px;font-size:14px;outline:none;}
-.search-bar input:focus{border-color:var(--c-brand);}
-.btn-search{padding:10px 20px;background:var(--c-brand);color:#fff;border:none;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;}
-.info-box{background:#F0FDF4;border-radius:10px;padding:14px;font-size:13px;color:#166534;margin-bottom:16px;line-height:1.6;}
-.warn-box{background:#FFFBEB;border-radius:8px;padding:12px;font-size:13px;color:#92400E;margin-bottom:16px;}
-.monospace{font-family:'Courier New',monospace;font-size:11px;}
-
-/* MODAL */
-.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);
-  z-index:1000;align-items:center;justify-content:center;}
-.modal-overlay.open{display:flex;}
-.modal{background:#fff;border-radius:16px;padding:28px;width:460px;max-width:90%;
-  box-shadow:0 24px 64px rgba(0,0,0,.25);animation:slideUp .25s ease;}
-@keyframes slideUp{from{transform:translateY(20px);opacity:0;}to{transform:translateY(0);opacity:1;}}
-.modal-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;}
-.modal-title{font-size:18px;font-weight:700;}
-.modal-close{background:none;border:none;font-size:22px;cursor:pointer;color:var(--c-muted);line-height:1;}
-
-/* TOAST */
-.toast{position:fixed;bottom:24px;right:24px;padding:14px 20px;border-radius:10px;
-  font-size:14px;font-weight:600;color:#fff;z-index:2000;
-  transform:translateY(80px);opacity:0;transition:all .3s;pointer-events:none;}
-.toast.show{transform:translateY(0);opacity:1;}
-.toast.success{background:#059669;}
-.toast.error{background:#DC2626;}
-.toast.info{background:#2563EB;}
-</style>
+<link rel="stylesheet" href="style.css">
 </head>
 <body>
 
 <!-- ══════ TOAST ══════ -->
 <div class="toast" id="toast"></div>
 
+<!-- ══════ SIDEBAR OVERLAY ══════ -->
+<div class="sidebar-overlay" id="sidebar-overlay" onclick="toggleSidebar()"></div>
+
 <!-- ══════ LOGIN ══════ -->
 <div class="view active" id="v-login">
   <div class="login-card">
-    <div class="login-logo">
-      <svg width="44" height="44" viewBox="0 0 44 44" fill="none">
-        <rect width="44" height="44" rx="12" fill="#00695C"/>
-        <path d="M10 22 Q22 10 34 22 Q22 34 10 22Z" fill="#80CBC4"/>
-        <circle cx="22" cy="22" r="6" fill="white"/>
-      </svg>
-      <div>
-        <div class="brand">COOPERA</div>
-        <div class="tagline">Inclusión Financiera Digital</div>
-      </div>
-    </div>
+    <img src="logo.png" alt="COOPERA Logo" class="login-logo-img">
+    <div class="login-tagline">Cooperando con un futuro mejor para las familias.</div>
 
     <div class="form-group">
       <label>Correo electrónico</label>
@@ -491,11 +175,7 @@ table tr:hover td{background:#FAFAFA;}
   <!-- SIDEBAR -->
   <div class="sidebar">
     <div class="sidebar-logo">
-      <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
-        <rect width="32" height="32" rx="8" fill="#00897B"/>
-        <path d="M6 16 Q16 6 26 16 Q16 26 6 16Z" fill="#80CBC4"/>
-        <circle cx="16" cy="16" r="5" fill="white"/>
-      </svg>
+      <img src="logo.png" alt="Logo" style="width: 42px; height: 42px; border-radius: 8px; background: #fff; object-fit: contain; padding: 2px; border: 1px solid rgba(255,255,255,0.1);">
       <div>
         <div class="brand">COOPERA</div>
         <div class="sub" id="sidebar-sub">Portal Socio</div>
@@ -516,6 +196,7 @@ table tr:hover td{background:#FAFAFA;}
   <!-- MAIN -->
   <div class="main">
     <div class="topbar">
+      <button class="hamburger" onclick="toggleSidebar()">☰</button>
       <div class="topbar-title" id="topbar-title">Dashboard</div>
       <div class="topbar-actions">
         <div class="notif-btn" onclick="showNotifModal()">🔔<div class="notif-dot"></div></div>
@@ -576,7 +257,9 @@ table tr:hover td{background:#FAFAFA;}
             </div>
             <div class="divider"></div>
             <div class="card-title">Actividad semanal</div>
-            <canvas id="chart-week" height="110"></canvas>
+            <div class="chart-container-sm">
+              <canvas id="chart-week"></canvas>
+            </div>
           </div>
         </div>
       </div>
@@ -677,7 +360,7 @@ table tr:hover td{background:#FAFAFA;}
             </div>
           </div>
           <div id="pay-form" style="display:none;">
-            <div style="display:flex;align-items:center;gap:12px;padding:14px;background:var(--c-brand-lt);border-radius:10px;margin-bottom:18px;border:1px solid rgba(0,137,123,.2);">
+            <div style="display:flex;align-items:center;gap:12px;padding:14px;background:var(--c-brand-lt);border-radius:10px;margin-bottom:18px;border:1px solid rgba(46,125,50,.2);">
               <span id="pay-icon-show" style="font-size:26px;"></span>
               <div>
                 <div id="pay-name-show" style="font-weight:700;font-size:15px;"></div>
@@ -768,11 +451,15 @@ table tr:hover td{background:#FAFAFA;}
         <div class="chart-grid">
           <div class="card">
             <div class="card-title">Transacciones por día — Abril 2026</div>
-            <canvas id="chart-admin-txns" height="130"></canvas>
+            <div class="chart-container">
+              <canvas id="chart-admin-txns"></canvas>
+            </div>
           </div>
           <div class="card">
             <div class="card-title">Distribución por tipo</div>
-            <canvas id="chart-admin-types" height="130"></canvas>
+            <div class="chart-container">
+              <canvas id="chart-admin-types"></canvas>
+            </div>
           </div>
         </div>
         <div class="grid-2">
@@ -817,7 +504,7 @@ table tr:hover td{background:#FAFAFA;}
             <table>
               <thead><tr><th>Socio</th><th>Cédula</th><th>Cuenta LAFISE</th><th>Estado KYC</th><th>Saldo</th><th>Última actividad</th><th>Acciones</th></tr></thead>
               <tbody id="users-table">
-                <tr><td><div style="display:flex;align-items:center;gap:8px;"><div class="avatar" style="width:30px;height:30px;font-size:11px;background:#00897B;">ML</div>María López</div></td><td class="monospace">001-260490-0012K</td><td class="monospace">CTA-0042-8812</td><td><span class="badge green">✓ Aprobado</span></td><td style="font-weight:700">C$ 24,850</td><td style="color:var(--c-muted);font-size:13px;">Hoy 09:14 AM</td><td><button class="btn-sm view" onclick="showUserDetail('María López','001-260490-0012K','CTA-0042-8812','24850','Aprobado')">Ver detalle</button></td></tr>
+                <tr><td><div style="display:flex;align-items:center;gap:8px;"><div class="avatar" style="width:30px;height:30px;font-size:11px;background:var(--c-brand);">ML</div>María López</div></td><td class="monospace">001-260490-0012K</td><td class="monospace">CTA-0042-8812</td><td><span class="badge green">✓ Aprobado</span></td><td style="font-weight:700">C$ 24,850</td><td style="color:var(--c-muted);font-size:13px;">Hoy 09:14 AM</td><td><button class="btn-sm view" onclick="showUserDetail('María López','001-260490-0012K','CTA-0042-8812','24850','Aprobado')">Ver detalle</button></td></tr>
                 <tr><td><div style="display:flex;align-items:center;gap:8px;"><div class="avatar" style="width:30px;height:30px;font-size:11px;background:#805AD5;">CM</div>Carlos Mendoza</div></td><td class="monospace">001-150385-0045J</td><td class="monospace">CTA-0031-1190</td><td><span class="badge green">✓ Aprobado</span></td><td style="font-weight:700">C$ 12,200</td><td style="color:var(--c-muted);font-size:13px;">Hoy 08:45 AM</td><td><button class="btn-sm view" onclick="showUserDetail('Carlos Mendoza','001-150385-0045J','CTA-0031-1190','12200','Aprobado')">Ver detalle</button></td></tr>
                 <tr><td><div style="display:flex;align-items:center;gap:8px;"><div class="avatar" style="width:30px;height:30px;font-size:11px;background:#E53E3E;">JR</div>José Ramírez</div></td><td class="monospace">001-220788-0073A</td><td class="monospace">—</td><td><span class="badge yellow">⚠ Revisión manual</span></td><td>—</td><td style="color:var(--c-muted);font-size:13px;">25 Abr 10:32</td><td><button class="btn-sm view" onclick="showUserDetail('José Ramírez','001-220788-0073A','—','0','Revisión manual')">Ver detalle</button></td></tr>
                 <tr><td><div style="display:flex;align-items:center;gap:8px;"><div class="avatar" style="width:30px;height:30px;font-size:11px;background:#3182CE;">AL</div>Ana Larios</div></td><td class="monospace">001-091292-0088F</td><td class="monospace">—</td><td><span class="badge red">✗ Documento inválido</span></td><td>—</td><td style="color:var(--c-muted);font-size:13px;">25 Abr 09:15</td><td><button class="btn-sm view" onclick="showUserDetail('Ana Larios','001-091292-0088F','—','0','Documento inválido')">Ver detalle</button></td></tr>
@@ -937,541 +624,21 @@ table tr:hover td{background:#FAFAFA;}
   </div>
 </div>
 
-<script>
-// ═══════════════════════════════════════
-// USUARIOS Y AUTENTICACIÓN
-// ═══════════════════════════════════════
-const USERS = {
-  'maria.lopez@coopera.ni': {
-    password: 'Socio2026!',
-    role: 'socio',
-    name: 'María López',
-    initials: 'ML',
-    avatar_color: '#00897B',
-    cuenta: 'CTA-0042-8812',
-    saldo: 'C$ 24,850.00',
-    notificaciones: [
-      { icon:'💵', msg:'Recibiste C$ 1,500 de Carlos Mendoza', time:'Hoy 09:14 AM', tipo:'success' },
-      { icon:'✅', msg:'Pago de energía DISNORTE confirmado (C$ 420)', time:'Ayer 02:30 PM', tipo:'success' },
-      { icon:'ℹ️', msg:'LAFISE OBL V1: Sistema operativo al 99.2%', time:'Hoy 06:00 AM', tipo:'info' },
-    ]
-  },
-  'operador@coopera.ni': {
-    password: 'Admin2026!',
-    role: 'admin',
-    name: 'Operador COOPERA',
-    initials: 'OP',
-    avatar_color: '#3182CE',
-    notificaciones: [
-      { icon:'⚠️', msg:'3 discrepancias en conciliación del 25 Abr', time:'Hoy 08:00 AM', tipo:'warn' },
-      { icon:'👤', msg:'7 socios pendientes de revisión KYC manual', time:'Hoy 07:30 AM', tipo:'warn' },
-      { icon:'🔌', msg:'API LAFISE: latencia elevada (1,840ms) en KYC', time:'Hoy 10:32 AM', tipo:'error' },
-    ]
-  }
-};
-
-let currentUser = null;
-let currentTxType = 'propia';
-let selectedSvcData = null;
-let onbStep = 1;
-const TOTAL_STEPS = 6;
-
-// ═══════════════════════════════════════
-// LOGIN
-// ═══════════════════════════════════════
-function doLogin() {
-  const email = document.getElementById('inp-email').value.trim().toLowerCase();
-  const pass = document.getElementById('inp-pass').value;
-  const errEl = document.getElementById('login-error');
-  errEl.style.display = 'none';
-
-  const user = USERS[email];
-  if (!user || user.password !== pass) {
-    errEl.style.display = 'block';
-    document.getElementById('inp-pass').style.borderColor = 'var(--c-red)';
-    setTimeout(() => {
-      document.getElementById('inp-pass').style.borderColor = 'var(--c-border)';
-    }, 2000);
-    return;
-  }
-
-  currentUser = { ...user, email };
-  setupApp();
-  showView('v-app');
-  navTo(user.role === 'admin' ? 'sc-admin-dash' : 'sc-dashboard');
-  showToast(`Bienvenido/a, ${user.name.split(' ')[0]} 👋`, 'success');
-}
-
-document.getElementById('inp-pass').addEventListener('keydown', e => {
-  if (e.key === 'Enter') doLogin();
-});
-document.getElementById('inp-email').addEventListener('keydown', e => {
-  if (e.key === 'Enter') document.getElementById('inp-pass').focus();
-});
-
-function togglePass() {
-  const inp = document.getElementById('inp-pass');
-  inp.type = inp.type === 'password' ? 'text' : 'password';
-}
-
-function confirmLogout() {
-  if (confirm('¿Deseas cerrar sesión?')) {
-    currentUser = null;
-    document.getElementById('inp-pass').value = '';
-    showView('v-login');
-  }
-}
-
-// ═══════════════════════════════════════
-// APP SETUP
-// ═══════════════════════════════════════
-function setupApp() {
-  const isAdmin = currentUser.role === 'admin';
-  const nav = isAdmin ? [
-    { section: 'Monitoreo' },
-    { label: 'Dashboard', icon: '📊', screen: 'sc-admin-dash' },
-    { section: 'Operaciones' },
-    { label: 'Gestión Socios', icon: '👥', screen: 'sc-admin-users' },
-    { label: 'Conciliación', icon: '⚖️', screen: 'sc-admin-recon' },
-    { label: 'Auditoría', icon: '🔍', screen: 'sc-admin-audit' },
-  ] : [
-    { section: 'Principal' },
-    { label: 'Inicio', icon: '🏠', screen: 'sc-dashboard' },
-    { section: 'Operaciones' },
-    { label: 'Transferencias', icon: '⬆', screen: 'sc-transfer' },
-    { label: 'Pago de Servicios', icon: '⚡', screen: 'sc-payments' },
-    { label: 'Mis Movimientos', icon: '📊', screen: 'sc-account' },
-  ];
-
-  let html = '';
-  nav.forEach(item => {
-    if (item.section) {
-      html += `<div class="nav-section">${item.section}</div>`;
-    } else {
-      html += `<div class="nav-item" onclick="navTo('${item.screen}')" data-screen="${item.screen}"><span class="icon">${item.icon}</span>${item.label}</div>`;
-    }
-  });
-  document.getElementById('sidebar-nav').innerHTML = html;
-  document.getElementById('sidebar-sub').textContent = isAdmin ? 'Panel Administrativo' : 'Portal Socio';
-  document.getElementById('sidebar-username').textContent = currentUser.name;
-  document.getElementById('sidebar-avatar').textContent = currentUser.initials;
-  document.getElementById('sidebar-avatar').style.background = currentUser.avatar_color;
-  document.getElementById('topbar-avatar').textContent = currentUser.initials;
-  document.getElementById('topbar-avatar').style.background = currentUser.avatar_color;
-
-  setTimeout(() => {
-    if (!isAdmin) renderWeekChart();
-    renderAdminCharts();
-  }, 150);
-}
-
-// ═══════════════════════════════════════
-// NAVEGACIÓN
-// ═══════════════════════════════════════
-const SCREEN_TITLES = {
-  'sc-dashboard': 'Inicio',
-  'sc-transfer': 'Transferencias',
-  'sc-payments': 'Pago de Servicios',
-  'sc-account': 'Mis Movimientos',
-  'sc-admin-dash': 'Panel de Control',
-  'sc-admin-users': 'Gestión de Socios',
-  'sc-admin-audit': 'Auditoría & Logs',
-  'sc-admin-recon': 'Conciliación',
-};
-
-function navTo(screen) {
-  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-  const el = document.getElementById(screen);
-  if (el) el.classList.add('active');
-  document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
-  const ni = document.querySelector(`.nav-item[data-screen="${screen}"]`);
-  if (ni) ni.classList.add('active');
-  document.getElementById('topbar-title').textContent = SCREEN_TITLES[screen] || 'COOPERA';
-}
-
-function showView(id) {
-  document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
-  document.getElementById(id).classList.add('active');
-}
-
-// ═══════════════════════════════════════
-// ONBOARDING
-// ═══════════════════════════════════════
-function initOnboarding() {
-  onbStep = 1;
-  renderPills();
-  document.querySelectorAll('.onb-step').forEach(s => s.classList.remove('active'));
-  document.getElementById('step-1').classList.add('active');
-  showView('v-onboarding');
-}
-
-function renderPills() {
-  let html = '';
-  for (let i = 1; i <= TOTAL_STEPS; i++) {
-    const cls = i < onbStep ? 'done' : i === onbStep ? 'active' : '';
-    html += `<div class="step-pill ${cls}"></div>`;
-  }
-  document.getElementById('step-pills').innerHTML = html;
-}
-
-function nextStep() { if (onbStep < TOTAL_STEPS) { onbStep++; switchStep(); } }
-function prevStep() { if (onbStep > 1) { onbStep--; switchStep(); } }
-function switchStep() {
-  document.querySelectorAll('.onb-step').forEach(s => s.classList.remove('active'));
-  document.getElementById('step-' + onbStep).classList.add('active');
-  renderPills();
-}
-
-function markDoc(side) {
-  const el = document.getElementById('doc-' + side);
-  el.innerHTML = `✅<br/><br/><span style="font-size:13px;color:#065F46;font-weight:600;">${side === 'front' ? 'Frente' : 'Reverso'} capturado</span>`;
-  document.getElementById('zone-' + side).style.borderColor = 'var(--c-green)';
-  document.getElementById('zone-' + side).style.background = '#F0FDF4';
-}
-
-function captureSelfie() {
-  document.getElementById('selfie-content').innerHTML = '✅<br/><br/><span style="font-size:13px;color:#065F46;font-weight:600;">Selfie capturada</span>';
-}
-
-let kycRunning = false;
-function runKYC() {
-  if (kycRunning) return;
-  kycRunning = true;
-  document.getElementById('kyc-btn-row').innerHTML = '';
-  const delays = [1200, 1600, 2000, 2500];
-  [0, 1, 2, 3].forEach((i, _, arr) => {
-    const ci = document.getElementById('kc-' + i);
-    const bi = document.getElementById('kb-' + i);
-    const totalDelay = delays.slice(0, i).reduce((a, b) => a + b, 0);
-    setTimeout(() => {
-      ci.className = 'check-icon spin'; ci.textContent = '↻';
-      bi.className = 'kyc-badge pending'; bi.textContent = 'Verificando…';
-      setTimeout(() => {
-        ci.className = 'check-icon ok'; ci.textContent = '✓';
-        bi.className = 'kyc-badge ok'; bi.textContent = 'Aprobado';
-        if (i === 3) setTimeout(() => { onbStep = 5; switchStep(); kycRunning = false; }, 600);
-      }, delays[i]);
-    }, totalDelay);
-  });
-}
-
-// ═══════════════════════════════════════
-// OTP
-// ═══════════════════════════════════════
-function otpNext(el, container) {
-  if (el.value.length === 1) {
-    const inputs = Array.from(container.querySelectorAll('.otp-box'));
-    const idx = inputs.indexOf(el);
-    if (idx < inputs.length - 1) inputs[idx + 1].focus();
-  }
-}
-
-// ═══════════════════════════════════════
-// TRANSFERENCIAS
-// ═══════════════════════════════════════
-const TX_LABELS = {
-  propia: 'Entre cuentas propias LAFISE',
-  tercero: 'A tercero LAFISE',
-  interbancaria: 'Transferencia interbancaria'
-};
-
-function setTxType(type, el) {
-  currentTxType = type;
-  document.querySelectorAll('.t-tab').forEach(t => t.classList.remove('active'));
-  el.classList.add('active');
-  const destLabel = { propia: 'Cuenta Destino (propia)', tercero: 'Cuenta Destino (tercero LAFISE)', interbancaria: 'N° de Cuenta Destino' };
-  document.getElementById('tx-dest-label').textContent = destLabel[type];
-  document.getElementById('tx-bank-group').style.display = type === 'interbancaria' ? 'block' : 'none';
-}
-
-function showTxReview() {
-  const dest = document.getElementById('tx-dest-input').value;
-  const monto = document.getElementById('tx-amount-inp').value;
-  const concepto = document.getElementById('tx-concepto').value;
-  document.getElementById('cf-type').textContent = TX_LABELS[currentTxType];
-  document.getElementById('cf-dest').textContent = dest;
-  document.getElementById('cf-amount').textContent = 'C$ ' + monto;
-  document.getElementById('cf-concepto').textContent = concepto;
-  document.getElementById('cf-idem').textContent = genUUID();
-  document.getElementById('tx-panel-form').style.display = 'none';
-  document.getElementById('tx-panel-review').style.display = 'block';
-  // Clear OTP
-  document.querySelectorAll('#tx-otp .otp-box').forEach(b => b.value = '');
-  document.querySelector('#tx-otp .otp-box').focus();
-}
-
-function backTxForm() {
-  document.getElementById('tx-panel-review').style.display = 'none';
-  document.getElementById('tx-panel-form').style.display = 'block';
-}
-
-function execTransfer() {
-  document.getElementById('tx-panel-review').style.display = 'none';
-  document.getElementById('tx-panel-success').style.display = 'block';
-  document.getElementById('tx-ref-out').textContent = 'LAF-' + Math.random().toString(36).substr(2, 8).toUpperCase();
-  document.getElementById('tx-amount-out').textContent = 'C$ ' + document.getElementById('tx-amount-inp').value;
-  document.getElementById('tx-ts-out').textContent = new Date().toLocaleString('es-NI');
-  showToast('Transferencia procesada exitosamente', 'success');
-}
-
-function resetTransfer() {
-  document.getElementById('tx-panel-success').style.display = 'none';
-  document.getElementById('tx-panel-form').style.display = 'block';
-}
-
-// ═══════════════════════════════════════
-// PAGOS DE SERVICIO
-// ═══════════════════════════════════════
-function selectSvc(el, name, prov, icon) {
-  document.querySelectorAll('.service-item').forEach(s => s.classList.remove('selected'));
-  el.classList.add('selected');
-  selectedSvcData = { name, prov, icon };
-  setTimeout(() => {
-    document.getElementById('pay-select').style.display = 'none';
-    document.getElementById('pay-form').style.display = 'block';
-    document.getElementById('pay-icon-show').textContent = icon;
-    document.getElementById('pay-name-show').textContent = name;
-    document.getElementById('pay-prov-show').textContent = prov;
-  }, 200);
-}
-
-function backPaySelect() {
-  document.getElementById('pay-form').style.display = 'none';
-  document.getElementById('pay-select').style.display = 'block';
-}
-
-function execPayment() {
-  const monto = document.getElementById('pay-monto').value;
-  document.getElementById('pay-form').style.display = 'none';
-  document.getElementById('pay-success').style.display = 'block';
-  document.getElementById('pay-svc-out').textContent = selectedSvcData.name;
-  document.getElementById('pay-prov-out').textContent = selectedSvcData.prov;
-  document.getElementById('pay-monto-out').textContent = 'C$ ' + monto;
-  document.getElementById('pay-folio-out').textContent = 'SVC-' + Math.random().toString(36).substr(2, 8).toUpperCase();
-  showToast('Pago realizado exitosamente', 'success');
-}
-
-function resetPayment() {
-  document.getElementById('pay-success').style.display = 'none';
-  document.getElementById('pay-select').style.display = 'block';
-  selectedSvcData = null;
-}
-
-// ═══════════════════════════════════════
-// FILTROS
-// ═══════════════════════════════════════
-function filterTx(el) {
-  document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
-  el.classList.add('active');
-}
-
-function filterUsers() {
-  const q = document.getElementById('user-search').value.toLowerCase();
-  document.querySelectorAll('#users-table tr').forEach(row => {
-    row.style.display = q === '' || row.textContent.toLowerCase().includes(q) ? '' : 'none';
-  });
-}
-
-// ═══════════════════════════════════════
-// ADMIN ACCIONES
-// ═══════════════════════════════════════
-function approveKyc(btn, name) {
-  const row = btn.closest('.kyc-item');
-  row.style.opacity = '0.4';
-  row.style.pointerEvents = 'none';
-  showToast(`KYC de ${name} aprobado ✓`, 'success');
-}
-
-function rejectKyc(btn, name) {
-  const row = btn.closest('.kyc-item');
-  row.style.opacity = '0.4';
-  row.style.pointerEvents = 'none';
-  showToast(`KYC de ${name} rechazado — notificación enviada`, 'error');
-}
-
-function showKycDetail(name) {
-  document.getElementById('modal-kyc-content').innerHTML = `
-    <div style="display:flex;align-items:center;gap:14px;margin-bottom:20px;padding:14px;background:#FEF9C3;border-radius:10px;">
-      <div class="kyc-avatar" style="width:52px;height:52px;font-size:18px;">${name.split(' ').map(w=>w[0]).join('').slice(0,2)}</div>
-      <div>
-        <div style="font-weight:700;font-size:16px;">${name}</div>
-        <div style="font-size:13px;color:var(--c-muted);">Revisión manual requerida</div>
-      </div>
+<!-- MODAL LOGOUT -->
+<div class="modal-overlay" id="modal-logout">
+  <div class="modal" style="width: 380px;">
+    <div class="modal-header">
+      <div class="modal-title">Cerrar Sesión</div>
+      <button class="modal-close" onclick="closeModal('modal-logout')">×</button>
     </div>
-    <div style="font-size:14px;">
-      <div class="confirm-row"><span class="label">BlacklistCheck</span><span class="badge green">✓ Aprobado</span></div>
-      <div class="confirm-row"><span class="label">DocumentCheck</span><span class="badge green">✓ Aprobado</span></div>
-      <div class="confirm-row"><span class="label">SelfieCheck</span><span class="badge red">✗ Confianza 64% (mín. 80%)</span></div>
-      <div class="confirm-row"><span class="label">BiometricCheck</span><span class="badge yellow">⚠ Pendiente</span></div>
+    <p class="text-muted" style="margin-bottom: 24px;">¿Estás seguro de que deseas salir de tu cuenta de COOPERA?</p>
+    <div class="nav-row">
+      <button class="btn-outline" onclick="closeModal('modal-logout')">Cancelar</button>
+      <button class="btn-primary-sm" style="background: var(--c-red);" onclick="executeLogout()">Sí, cerrar sesión</button>
     </div>
-    <div class="warn-box" style="margin-top:16px;">La selfie presentó baja confianza biométrica. Se requiere revisión manual del documento vs. captura facial.</div>
-    <div class="nav-row" style="margin-top:8px;">
-      <button class="btn-outline" onclick="closeModal('modal-kyc')">Cancelar</button>
-      <button class="btn-primary-sm" onclick="closeModal('modal-kyc');showToast('KYC aprobado manualmente','success')">Aprobar manualmente ✓</button>
-    </div>
-  `;
-  openModal('modal-kyc');
-}
+  </div>
+</div>
 
-function showUserDetail(name, cedula, cuenta, saldo, kyc) {
-  const kycBadge = kyc === 'Aprobado' ? '<span class="badge green">✓ Aprobado</span>' :
-    kyc.includes('manual') ? '<span class="badge yellow">⚠ Revisión manual</span>' :
-    '<span class="badge red">✗ ' + kyc + '</span>';
-  document.getElementById('modal-user-content').innerHTML = `
-    <div style="display:flex;align-items:center;gap:14px;margin-bottom:20px;">
-      <div class="avatar" style="width:52px;height:52px;font-size:18px;">${name.split(' ').map(w=>w[0]).join('').slice(0,2)}</div>
-      <div>
-        <div style="font-weight:700;font-size:18px;">${name}</div>
-        <div style="font-size:13px;color:var(--c-muted);">Cédula: ${cedula}</div>
-      </div>
-    </div>
-    <div style="font-size:14px;">
-      <div class="confirm-row"><span class="label">N° Cuenta LAFISE</span><span class="val monospace">${cuenta}</span></div>
-      <div class="confirm-row"><span class="label">Saldo disponible</span><span class="val" style="color:var(--c-green)">${saldo !== '0' ? 'C$ ' + Number(saldo).toLocaleString() + '.00' : '—'}</span></div>
-      <div class="confirm-row"><span class="label">Estado KYC</span><span class="val">${kycBadge}</span></div>
-      <div class="confirm-row"><span class="label">Banco</span><span class="val">LAFISE Nicaragua</span></div>
-      <div class="confirm-row"><span class="label">Moneda</span><span class="val">Córdoba (NIO)</span></div>
-      <div class="confirm-row"><span class="label">Tipo de cuenta</span><span class="val">Cuenta Simplificada</span></div>
-    </div>
-    <div class="nav-row" style="margin-top:16px;">
-      <button class="btn-outline" onclick="closeModal('modal-user')">Cerrar</button>
-      <button class="btn-primary-sm" onclick="closeModal('modal-user');showToast('Acción registrada en auditoría','info')">Ver transacciones</button>
-    </div>
-  `;
-  openModal('modal-user');
-}
-
-function runRecon() {
-  showToast('Ejecutando conciliación COOPERA ↔ LAFISE...', 'info');
-  setTimeout(() => showToast('Conciliación completada: 139/142 confirmadas, 3 discrepancias', 'success'), 2500);
-}
-
-// ═══════════════════════════════════════
-// NOTIFICACIONES
-// ═══════════════════════════════════════
-function showNotifModal() {
-  if (!currentUser) return;
-  const notifs = currentUser.notificaciones || [];
-  const tipoColor = { success: '#D1FAE5', warn: '#FEF9C3', error: '#FEE2E2', info: '#DBEAFE' };
-  let html = '';
-  notifs.forEach(n => {
-    html += `<div style="display:flex;gap:14px;padding:14px;background:${tipoColor[n.tipo] || '#F8FAFC'};border-radius:10px;margin-bottom:10px;">
-      <span style="font-size:22px;">${n.icon}</span>
-      <div>
-        <div style="font-size:14px;font-weight:600;">${n.msg}</div>
-        <div style="font-size:12px;color:var(--c-muted);margin-top:3px;">${n.time}</div>
-      </div>
-    </div>`;
-  });
-  document.getElementById('modal-notif-content').innerHTML = html || '<p class="text-muted text-center">Sin notificaciones nuevas</p>';
-  openModal('modal-notif');
-}
-
-// ═══════════════════════════════════════
-// MODAL
-// ═══════════════════════════════════════
-function openModal(id) { document.getElementById(id).classList.add('open'); }
-function closeModal(id) { document.getElementById(id).classList.remove('open'); }
-document.querySelectorAll('.modal-overlay').forEach(overlay => {
-  overlay.addEventListener('click', e => { if (e.target === overlay) overlay.classList.remove('open'); });
-});
-
-// ═══════════════════════════════════════
-// TOAST
-// ═══════════════════════════════════════
-let toastTimeout;
-function showToast(msg, type = 'success') {
-  const t = document.getElementById('toast');
-  clearTimeout(toastTimeout);
-  t.textContent = msg;
-  t.className = `toast ${type} show`;
-  toastTimeout = setTimeout(() => t.classList.remove('show'), 3500);
-}
-
-// ═══════════════════════════════════════
-// CHARTS
-// ═══════════════════════════════════════
-let weekChart, adminTxnChart, adminTypeChart;
-function renderWeekChart() {
-  const ctx = document.getElementById('chart-week');
-  if (!ctx) return;
-  if (weekChart) weekChart.destroy();
-  weekChart = new Chart(ctx, {
-    type: 'bar',
-    data: {
-      labels: ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom'],
-      datasets: [{
-        label: 'Transacciones',
-        data: [2, 5, 4, 8, 6, 3, 5],
-        backgroundColor: ['#00897B','#00897B','#00897B','#00897B','#00897B','#80CBC4','#80CBC4'],
-        borderRadius: 6
-      }]
-    },
-    options: {
-      plugins: { legend: { display: false } },
-      scales: {
-        x: { grid: { display: false }, ticks: { font: { size: 11 } } },
-        y: { grid: { color: '#F0F0F0' }, beginAtZero: true, ticks: { font: { size: 11 } } }
-      }
-    }
-  });
-}
-
-function renderAdminCharts() {
-  const ctx1 = document.getElementById('chart-admin-txns');
-  if (ctx1) {
-    if (adminTxnChart) adminTxnChart.destroy();
-    adminTxnChart = new Chart(ctx1, {
-      type: 'line',
-      data: {
-        labels: ['10','12','14','16','18','20','22','24','25'],
-        datasets: [{
-          label: 'Transacciones',
-          data: [55, 68, 60, 74, 66, 82, 78, 91, 85],
-          borderColor: '#00897B', fill: true,
-          backgroundColor: 'rgba(0,137,123,0.08)',
-          tension: 0.4, pointBackgroundColor: '#00897B', pointRadius: 4
-        }]
-      },
-      options: {
-        plugins: { legend: { display: false } },
-        scales: {
-          x: { grid: { display: false } },
-          y: { grid: { color: '#F0F0F0' }, beginAtZero: true }
-        }
-      }
-    });
-  }
-  const ctx2 = document.getElementById('chart-admin-types');
-  if (ctx2) {
-    if (adminTypeChart) adminTypeChart.destroy();
-    adminTypeChart = new Chart(ctx2, {
-      type: 'doughnut',
-      data: {
-        labels: ['Transferencias', 'Pagos', 'Consultas', 'KYC'],
-        datasets: [{
-          data: [38, 24, 28, 10],
-          backgroundColor: ['#00897B', '#3182CE', '#805AD5', '#D69E2E'],
-          borderWidth: 0
-        }]
-      },
-      options: {
-        plugins: { legend: { position: 'bottom', labels: { boxWidth: 12, font: { size: 11 } } } },
-        cutout: '62%'
-      }
-    });
-  }
-}
-
-// ═══════════════════════════════════════
-// UTILS
-// ═══════════════════════════════════════
-function genUUID() {
-  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => {
-    const r = Math.random() * 16 | 0;
-    return (c === 'x' ? r : (r & 0x3 | 0x8)).toString(16);
-  });
-}
-</script>
+<script src="script.js"></script>
 </body>
 </html>
